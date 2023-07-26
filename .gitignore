@@ -1,4 +1,7 @@
 __pycache__/
 main.py
 testconn.py
-testtest.py
+testapi.py
+.circleci/
+models.py
+python-api-project-393719-93fac9224067.json
