@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  gcp-cli: circleci/gcp-cli@0.1.14
+  gcp-cli: circleci/gcp-cli
 
 jobs:
   build:
