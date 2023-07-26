@@ -13,12 +13,12 @@ jobs:
       # Install dependencies, configure Python environment, etc.
       - run: pip install -r requirements.txt
 
-  test:
-    docker:
-      - image: circleci/python:3.9
-    steps:
-      - checkout
-      - run: pip install -r requirements.txt
+  #test:
+    #docker:
+      #- image: circleci/python:3.9
+    #steps:
+      #- checkout
+      #- run: pip install -r requirements.txt
       # Add your test commands here
 
   deploy:
@@ -53,6 +53,6 @@ workflows:
       - test:
           requires:
             - build
-      - deploy:
-          requires:
-            - test
+      #- deploy:
+          #requires:
+            #- test
