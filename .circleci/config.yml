@@ -18,7 +18,8 @@ jobs:
           name: Check Docker daemon
           command: docker info
 
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.9
 
       - run:
           name: Start Docker deamon
