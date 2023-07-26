@@ -6,6 +6,10 @@ from models import Gender, Role, User, UpdateUser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from databases import Database
+from google.cloud import pubsub_v1
+
+publisher = pubsub_v1.PublisherClient.from_service_account_file('C:/Users/38761/Desktop/Development/PYTHON/python-api-project-393719-93fac9224067.json')
+subscriber = pubsub_v1.SubscriberClient.from_service_account_file('C:/Users/38761/Desktop/Development/PYTHON/python-api-project-393719-93fac9224067.json')
 
 DATABASE_URL = "postgresql://bexpy:C0d1ng99@localhost:5432/firstdb"
 
@@ -120,5 +124,3 @@ async def update_user(user_update: UpdateUser, id:UUID):
             return user.id
         raise HTTPException(status_code=404, detail=f"Could not find user with id: {id}")
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8002)
