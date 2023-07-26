@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            export GCR_IMAGE=gcr.io/$python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
+            export GCR_IMAGE=gcr.io/python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
             docker build -t $GCR_IMAGE .
             gcloud auth configure-docker
             docker push $GCR_IMAGE
