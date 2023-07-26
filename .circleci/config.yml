@@ -8,38 +8,21 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.9
-      #- image: docker:20.10.9
-        #environment:
-          #DOCKER_HOST: tcp://localhost:2375
+
     steps:
       - checkout
+      - run: pip install -r requirements.txt
+      - run: docker build -t mydock_image .
+      - run: docker push mydock_image
 
-      - run:
-          name: Check Docker daemon
-          command: docker info
+  test:
+    docker:
+      - image: circleci/python:3.9
 
-      - setup_remote_docker
-
-      - run:
-          name: Start Docker deamon
-          command: |
-            dockerd --experimental --host=unix:///var/run/docker.sock --host=tcp://localhost:2375 &
-
-      - run:
-          name: Wait for Docker deamon
-          command: docker info
-          background: true
-
+    steps:
+      - checkout
       # Install dependencies, configure Python environment, etc.
       - run: pip install -r requirements.txt
-
-  #test:
-    #docker:
-      #- image: circleci/python:3.9
-    #steps:
-      #- checkout
-      #- run: pip install -r requirements.txt
-      # Add your test commands here
 
   deploy:
     docker:
@@ -47,6 +30,8 @@ jobs:
     steps:
       - checkout
       - run: pip install -r requirements.txt
+      - run: docker pull mydock_image
+      - run: docker run -d -p 8080:80 mydock_image
       - gcp-cli/install
 
       # Build and push the Docker image to Google Container Registry
@@ -70,9 +55,9 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-      - deploy:
+      - test:
           requires:
             - build
-      #- deploy:
-          #requires:
-            #- test
+      - deploy:
+          requires:
+            - test
