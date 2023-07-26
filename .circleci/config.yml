@@ -8,8 +8,8 @@ jobs:
     docker:
       - image: circleci/python:3.9
       - image docker:20.10.9
-        environment:
-          DOCKER_HOST: tcp://localhost:2375
+      environment:
+        DOCKER_HOST: tcp://localhost:2375
     steps:
       - checkout
 
