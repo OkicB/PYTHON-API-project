@@ -13,6 +13,16 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Start Docker deamon
+          command: |
+            dockerd --experimental --host=unix:///var/run/docker.sock --host=tcp://localhost:2375 &
+
+      - run:
+          name: Wait for Docker deamon
+          command: docker info
+          background: true
+
       # Install dependencies, configure Python environment, etc.
       - run: pip install -r requirements.txt
 
