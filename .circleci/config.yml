@@ -1,0 +1,60 @@
+version: 2.1
+
+orbs:
+  gcp-cli: circleci/gcp-cli@0.1.14
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout
+
+      # Install dependencies, configure Python environment, etc.
+      - run: pip install -r requirements.txt
+
+  '''test:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout
+      - run: pip install -r requirements.txt
+      # Add your test commands here'
+
+  deploy:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout
+      - run: pip install -r requirements.txt
+      - gcp-cli/install
+
+      # Build and push the Docker image to Google Container Registry
+      - run:
+          name: Build and push Docker image
+          command: |
+            export GCR_IMAGE=gcr.io/$python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
+            docker build -t $GCR_IMAGE .
+            gcloud auth configure-docker
+            docker push $GCR_IMAGE
+
+      # Deploy the Docker image to Google Cloud Run
+      - run:
+          name: Deploy to Google Cloud Run
+          command: |
+            export GCR_IMAGE=gcr.io/$python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
+            gcloud run deploy bex-py-api --image=$GCR_IMAGE --platform=managed --region=europe-west8
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+            '''
+      - deploy:
+          requires:
+            - test
+'
