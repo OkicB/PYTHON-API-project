@@ -7,7 +7,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/python:3.9
+      - image: circleci/python:3.9-buster
 
     steps:
       - checkout
