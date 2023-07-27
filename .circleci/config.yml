@@ -4,59 +4,43 @@ orbs:
   docker: circleci/docker@1.2.0
   gcp-cli: circleci/gcp-cli@3.1.0
 
-executors:
-  docker-executor:
-    docker:
-      - image: circleci/python:3.9
-      - image: docker/compose:1.29.2
-    environment:
-      DOCKER_HOST: tcp://localhost:2375
-
 jobs:
   build:
-    executor: docker-executor
+    docker:
+      - image: circleci/python:3.9
+
     steps:
       - checkout
-      - run: pip install -r requirements.txt
-      - run: docker build -t mydock_image .
-      - run: docker-compose up -d
       - run:
-          name: Check Docker Deamon Status
-          command: docker info
+          name: Install dependencies
+          command: pip install -r requirements.txt
+
+      # Add more steps here as needed for your specific build process
 
   test:
     docker:
       - image: circleci/python:3.9
+
     steps:
       - checkout
-      # Install dependencies, configure Python environment, etc.
-      - run: pip install -r requirements.txt
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Run tests
+          command: pytest
 
   deploy:
     docker:
       - image: circleci/python:3.9
+
     steps:
       - checkout
-      - run: pip install -r requirements.txt
-      - run: docker pull mydock_image
-      - run: docker run -d -p 8080:80 mydock_image
-      - gcp-cli/install
-
-      # Build and push the Docker image to Google Container Registry
       - run:
-          name: Build and push Docker image
-          command: |
-            export GCR_IMAGE=gcr.io/python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
-            docker build -t $GCR_IMAGE .
-            gcloud auth configure-docker
-            docker push $GCR_IMAGE
+          name: Install dependencies
+          command: pip install -r requirements.txt
 
-      # Deploy the Docker image to Google Cloud Run
-      - run:
-          name: Deploy to Google Cloud Run
-          command: |
-            export GCR_IMAGE=gcr.io/$python-api-project-393719-93fac9224067/mydock_image:${CIRCLE_SHA1}
-            gcloud run deploy bex-py-api --image=$GCR_IMAGE --platform=managed --region=europe-west8
+      # Add steps for deploying your application (e.g., pushing to a registry, deploying to a cloud platform, etc.)
 
 workflows:
   version: 2
