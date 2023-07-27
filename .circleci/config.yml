@@ -3,35 +3,24 @@ version: 2.1
 orbs:
   docker: circleci/docker@1.2.0
   gcp-cli: circleci/gcp-cli@3.1.0
-
-executors:
-  docker-executor:
-    docker:
-      - image: circleci/python:3.9
-      - image: docker/compose:1.29.2
-    environment:
-      DOCKER_HOST: tcp://localhost:2375
-
-services:
-  docker:
-    image: docker:20.10.9
-    environment:
-      DOCKER_TLS_CERTDIR: ""
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+  win: circleci/windows@5.0
 
 jobs:
   build:
-    executor: docker-executor
-
+    executor:
+      name: win/default
+      shell: powershell.exe
     steps:
       - checkout
+      - run: systeminfo
+      - run:
+          name: "Check Docker"
+          shell: powershell.exe
+          command: |
+            docker info
+            docker run -it mcr.microsoft.com/windows/nanoserver:ltsc2022 cmd.exe
       - run: pip install -r requirements.txt
       - run: docker build -t mydock_image .
-      - run: docker-compose up -d
-      - run:
-          name: Install dependencies
-          command: pip install -r requirements.txt
 
       # Add more steps here as needed for your specific build process
 
