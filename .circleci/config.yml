@@ -10,7 +10,7 @@ executors:
       - image: circleci/python:3.9
       - image: docker/compose:1.29.2
     environment:
-      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_HOST: tcp://localhost:5432
 
 jobs:
   build:
