@@ -20,6 +20,9 @@ jobs:
       - run: pip install -r requirements.txt
       - run: docker build -t mydock_image .
       - run: docker-compose up -d
+      - run:
+          name: Check Docker Deamon Status
+          command: docker info
 
   test:
     docker:
