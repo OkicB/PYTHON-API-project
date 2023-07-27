@@ -5,19 +5,21 @@ orbs:
   gcp-cli: circleci/gcp-cli@3.1.0
 
 executors:
-  docker-windows:
+  docker-executor:
     docker:
       - image: circleci/python:3.9
+      - image: docker/compose:1.29.2
     environment:
       DOCKER_HOST: tcp://localhost:2375
 
 jobs:
   build:
-    executor: docker-windows
+    executor: docker-executor
     steps:
       - checkout
       - run: pip install -r requirements.txt
       - run: docker build -t mydock_image .
+      - run: docker-compose up -d
 
   test:
     docker:
