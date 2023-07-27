@@ -4,55 +4,31 @@ orbs:
   docker: circleci/docker@1.2.0
   gcp-cli: circleci/gcp-cli@3.1.0
 
-jobs:
-  build:
+executors:
+  docker-executor:
     docker:
       - image: circleci/python:3.9
+      - image: docker/compose:1.29.2
+    environment:
+      DOCKER_HOST: tcp://localhost:2375
+
+jobs:
+  build:
+    executor: docker-executor
 
     steps:
       - checkout
+      - run: pip install -r requirements.txt
+      - run: docker build -t mydock_image .
+      - run: docker-compose up -d
       - run:
           name: Install dependencies
           command: pip install -r requirements.txt
 
       # Add more steps here as needed for your specific build process
 
-  test:
-    docker:
-      - image: circleci/python:3.9
-
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: pip install -r requirements.txt
-      - run:
-          name: Install test dependencies
-          command: pip install pytest
-      - run:
-          name: Run tests
-          command: pytest
-
-  deploy:
-    docker:
-      - image: circleci/python:3.9
-
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: pip install -r requirements.txt
-
-      # Add steps for deploying your application (e.g., pushing to a registry, deploying to a cloud platform, etc.)
-
 workflows:
   version: 2
-  build_test_deploy:
+  build_only:
     jobs:
       - build
-      - test:
-          requires:
-            - build
-      - deploy:
-          requires:
-            - test
