@@ -10,7 +10,15 @@ executors:
       - image: circleci/python:3.9
       - image: docker/compose:1.29.2
     environment:
-      DOCKER_HOST: tcp://localhost:5432
+      DOCKER_HOST: tcp://localhost:2375
+
+services:
+  docker:
+    image: docker:20.10.9
+    environment:
+      DOCKER_TLS_CERTDIR: ""
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 jobs:
   build:
