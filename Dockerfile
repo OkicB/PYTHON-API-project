@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire FastAPI application into the container
 #COPY requirements.txt /app/
 COPY testtest.py .
-COPY python-api-project-393719-93fac9224067.json /app/credentials/
+COPY YOUR_PROJECT_ID.json /app/credentials/
 
 EXPOSE 8080
 
