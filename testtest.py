@@ -5,21 +5,21 @@ import uvicorn, psycopg2, json
 from google.cloud import bigquery, pubsub, pubsub_v1
 from google.cloud.pubsub_v1.types import PullRequest
 
-#publisher = pubsub_v1.PublisherClient.from_service_account_file('C:/Users/38761/Desktop/Development/PYTHON/python-api-project-393719-93fac9224067.json')
-bq_client = bigquery.Client.from_service_account_json('/app/credentials/python-api-project-393719-93fac9224067.json')
-subscriber = pubsub.SubscriberClient.from_service_account_file('/app/credentials/python-api-project-393719-93fac9224067.json')
-publisher = pubsub_v1.PublisherClient.from_service_account_file('/app/credentials/python-api-project-393719-93fac9224067.json')
-topic_path = publisher.topic_path('python-api-project-393719-93fac9224067', 'bex-py-api-topic')
-subscription_path = subscriber.subscription_path('python-api-project-393719-93fac9224067', 'bex-py-api-subs')
+#publisher = pubsub_v1.PublisherClient.from_service_account_file('COPY YOUR_CREDENTIALS_FILE.json')
+bq_client = bigquery.Client.from_service_account_json('COPY YOUR_CREDENTIALS_FILE.json /app/credentials/project-id.json')
+subscriber = pubsub.SubscriberClient.from_service_account_file('COPY YOUR_CREDENTIALS_FILE.json /app/credentials/project-id.json')
+publisher = pubsub_v1.PublisherClient.from_service_account_file('COPY YOUR_CREDENTIALS_FILE.json /app/credentials/project-id.json')
+topic_path = publisher.topic_path('PROJECT_ID', 'YOUR_TOPIC')
+subscription_path = subscriber.subscription_path('PROJECT_ID', 'SUBS_PATH')
 
 
 app = FastAPI(debug=True)
 
-DB_HOST = "172.25.192.1"
-DB_PORT = "5432"
-DB_NAME = "firstdb"
-DB_USER = "bexpy"
-DB_PASSWORD = "C0d1ng99"
+DB_HOST = "YOUR_HOST"
+DB_PORT = "YOUR_PORT"
+DB_NAME = "YOUR_NAME"
+DB_USER = "YOUR_USER"
+DB_PASSWORD = "YOUR_PASS"
 
 class User(BaseModel):
     id: int
@@ -56,7 +56,7 @@ async def get_user():
 @app.get("/bigquery_data", response_model=List[dict])
 async def get_bigquery_data():
     try:
-        dataset_id = "python-api-project-393719.bex_py_api_dataset"
+        dataset_id = "YOUR_PROJECT_ID.DATASET"
         table_name = "test"
 
         sql_query = f"SELECT id, name FROM `{dataset_id}.{table_name}`;"
@@ -74,7 +74,7 @@ async def get_bigquery_data():
 async def post_to_bigquery(user: User):
     try:
         data_to_insert = [{"id": user.id, "name": user.name}]
-        dataset_id = "bex_py_api_dataset"
+        dataset_id = "YOUR_DATASET"
         table_name = "test"
         table_ref = bq_client.dataset(dataset_id).table(table_name)
         table = bq_client.get_table(table_ref)
@@ -101,7 +101,7 @@ async def publish_message(message: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-dataset_id = "bex_py_api_dataset"
+dataset_id = "YOUR_DATASET"
 table_name2 = "subs-table"
 table_ref = bq_client.dataset(dataset_id).table(table_name2)
 table = bq_client.get_table(table_ref)
@@ -148,7 +148,7 @@ async def create_user(user: User):
 @app.post("/publish_message")
 async def publish_message(message: str):
     try:
-        topic = subscriber.topic('bex-py-api-topic')
+        topic = subscriber.topic('YOUR_TOPIC')
         topic.publish(message.encode('utf-8'))
         return {"message": "Message published successfully"}
     except Exception as e:
@@ -158,7 +158,7 @@ async def publish_message(message: str):
 @app.post("/receive_message")
 async def receive_message():
     try:
-        subscription = subscriber.subscription('bex-py-api-subs')
+        subscription = subscriber.subscription('YOUR_SUBSCRIPTION')
         received_messages = subscription.pull(return_immediately=True)
         messages = []
         for ack_id, message in received_messages:
