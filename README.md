@@ -18,8 +18,8 @@ Welcome to the FastAPI application integrated with Google Cloud services, specif
 ## Setup and Configuration
 
 1. **Database Configuration:** Configure PostgreSQL connection parameters in the `get_db` function.
-2. **Google Cloud Credentials:** Replace the placeholder JSON file (`python-api-project-393719-93fac9224067.json`) with your Google Cloud service account credentials.
-3. **BigQuery Dataset:** Create a BigQuery dataset named `bex_py_api_dataset`.
+2. **Google Cloud Credentials:** Replace the placeholder JSON file (`COPY YOUR_CREDENTIALS_FILE.json /app/credentials/`) with your Google Cloud service account credentials.
+3. **BigQuery Dataset:** Create a BigQuery dataset named `COPY YOUR_CREDENTIALS_OF_DATASET`.
 4. **Pub/Sub Topic and Subscription:** Modify topic and subscription names in the `topic_path` and `subscription_path` variables.
 
 ## Endpoints
